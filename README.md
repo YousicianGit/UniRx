@@ -1267,9 +1267,17 @@ Intro slide by [@torisoup](https://github.com/torisoup)
 
 Intro slide and sample game by [@Xerios](https://github.com/Xerios)
 
+* [GDC 2016 Sessions of Adventure Capialist](https://www.youtube.com/watch?v=j3YhG91mPsU&feature=youtu.be&t=9m12s)
+
+How to integrate with PlayFab API
+
 What game or library is using UniRx?
 ---
 Games
+- [Farm Away!][(http://www.farmawaygame.com/)
+- [Build Away!](http://www.buildawaygame.com/)
+- [AdVenture Capitalist](http://hyperhippo.ca/games/adventure-capitalist/)
+- [AdVenture Communist](http://hyperhippo.ca/games/adventure-communist/)
 
 Libraries
 
@@ -1278,6 +1286,7 @@ Libraries
 - [EcsRx](https://github.com/grofit/ecsrx) - A simple framework for unity using the ECS paradigm but with unirx for fully reactive systems.
 - [ActionStreetMap Demo](https://github.com/ActionStreetMap/demo) - ASM is an engine for building real city environment dynamically using OSM data.
 - [utymap](https://github.com/reinterpretcat/utymap) - UtyMap is library for building real city environment dynamically using various data sources (mostly, OpenStreetMap and Natural Earth).
+- [Submarine](https://github.com/shiwano/submarine) - A mobile game that is made with Unity3D and RoR, WebSocket server written in Go.
 
 If you use UniRx, please comment to [UniRx/issues/152](https://github.com/neuecc/UniRx/issues/152).
 
