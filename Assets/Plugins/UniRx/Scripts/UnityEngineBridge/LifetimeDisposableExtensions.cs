@@ -1,4 +1,16 @@
-﻿using System;
+﻿#if UNIRX_ALLOW_ADD_TO_COMPONENT
+
+/*
+ * AddTo on GameObject or Component doesn't work nicely in Unity batch mode:
+ * - It uses AddComponent<ObservableDestroyTrigger>
+ * - ObservableDestroyTrigger will dispose stuff in its OnDestroy
+ * - OnDestroy never gets called if the component was never active
+ * - To work around the previous point, we start an end-of-frame coroutine to check for the game object either becoming active or being destroyed
+ * - WaitForEndOfFrame doesn't work in batch mode, and Unity refuses to fix it
+ * => If the game object was disabled when calling AddTo(this), the dispose will never happen in batch mode.
+ */
+
+using System;
 using System.Collections;
 using System.Collections.Generic;
 using UniRx.Triggers;
@@ -88,3 +100,5 @@ namespace UniRx
         }
     }
 }
+
+#endif
