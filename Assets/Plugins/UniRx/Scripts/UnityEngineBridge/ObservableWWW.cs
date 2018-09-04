@@ -100,6 +100,7 @@ namespace UniRx
             return ObservableUnity.FromCoroutine<WWW>((observer, cancellation) => Fetch(new WWW(url, content.data, MergeHash(contentHeaders, headers)), observer, progress, cancellation));
         }
 
+#if ENABLE_ASSET_BUNDLE
         public static IObservable<AssetBundle> LoadFromCacheOrDownload(string url, int version, IProgress<float> progress = null)
         {
             return ObservableUnity.FromCoroutine<AssetBundle>((observer, cancellation) => FetchAssetBundle(WWW.LoadFromCacheOrDownload(url, version), observer, progress, cancellation));
@@ -121,6 +122,7 @@ namespace UniRx
         {
             return ObservableUnity.FromCoroutine<AssetBundle>((observer, cancellation) => FetchAssetBundle(WWW.LoadFromCacheOrDownload(url, hash128, crc), observer, progress, cancellation));
         }
+#endif
 #endif
 
         // over 4.5, Hash define is Dictionary.
@@ -326,6 +328,7 @@ namespace UniRx
             }
         }
 
+#if ENABLE_ASSET_BUNDLE
         static IEnumerator FetchAssetBundle(WWW www, IObserver<AssetBundle> observer, IProgress<float> reportProgress, CancellationToken cancel)
         {
             using (www)
@@ -383,6 +386,7 @@ namespace UniRx
                 }
             }
         }
+#endif
     }
 
     public class WWWErrorException : Exception
