@@ -86,10 +86,12 @@ namespace UniRx
 
     public static class CoroutineAsyncExtensions
     {
+#if !UNITY_2018_2_OR_NEWER
         public static CoroutineAsyncBridge<WWW> GetAwaiter(this WWW www)
         {
             return CoroutineAsyncBridge<WWW>.Start(www);
         }
+#endif
 
         public static CoroutineAsyncBridge GetAwaiter(this Coroutine coroutine)
         {
