@@ -233,7 +233,9 @@ namespace UniRx
     {
         readonly static HashSet<Type> YieldInstructionTypes = new HashSet<Type>
         {
+#if !UNITY_2018_2_OR_NEWER
             typeof(WWW),
+#endif
             typeof(WaitForEndOfFrame),
             typeof(WaitForFixedUpdate),
             typeof(WaitForSeconds),
