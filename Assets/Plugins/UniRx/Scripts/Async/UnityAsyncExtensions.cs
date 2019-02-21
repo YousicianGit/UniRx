@@ -59,7 +59,7 @@ namespace UniRx.Async
             return new UniTask<UnityEngine.Object>(awaiter);
         }
 
-#if ENABLE_WWW
+#if WWW
 
 #if UNITY_2018_3_OR_NEWER
 #pragma warning disable CS0618
@@ -436,7 +436,7 @@ namespace UniRx.Async
             }
         }
 
-#if ENABLE_WWW
+#if WWW
 
 #if UNITY_2018_3_OR_NEWER
 #pragma warning disable CS0618
