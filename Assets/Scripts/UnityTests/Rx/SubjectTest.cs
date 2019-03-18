@@ -476,5 +476,45 @@ namespace UniRx.Tests
             subject.Subscribe(x => onNext.Add(x), x => exception.Add(x), () => onCompletedCallCount++);
             onNext.Is(10000, 2, 20);
         }
+
+        [Test]
+        public void Subject_UnsubscribeFromOnNext()
+        {
+            UnsubscribeFromOnNextTest(() => new Subject<int>());
+        }
+
+        [Test]
+        public void BehaviorSubject_UnsubscribeFromOnNext()
+        {
+            UnsubscribeFromOnNextTest(() => new BehaviorSubject<int>(0));
+        }
+
+        [Test]
+        public void ReplaySubject_UnsubscribeFromOnNext()
+        {
+            UnsubscribeFromOnNextTest(() => new ReplaySubject<int>());
+        }
+
+        [Test]
+        public void AsyncSubject_UnsubscribeFromOnNext()
+        {
+            UnsubscribeFromOnNextTest(() => new AsyncSubject<int>());
+        }
+
+        private void UnsubscribeFromOnNextTest<T>(Func<T> constructor)
+            where T : ISubject<int>
+        {
+            var subject = constructor();
+
+            bool receivedValue = false;
+            IDisposable subscription = null;
+            subject.Subscribe(_ => subscription.Dispose());
+            subscription = subject.Subscribe(_ => receivedValue = true);
+
+            receivedValue = false;
+            subject.OnNext(0);
+            subject.OnCompleted();
+            Assert.IsFalse(receivedValue);
+        }
     }
 }
