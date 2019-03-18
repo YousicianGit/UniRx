@@ -2,6 +2,9 @@
 // The .NET Foundation licenses this file to you under the Apache 2.0 License.
 // See the LICENSE_DOTNET file in the project root for more information.
 
+// Changes:
+// * use UniRx namespace
+
 using System;
 using System.Threading;
 

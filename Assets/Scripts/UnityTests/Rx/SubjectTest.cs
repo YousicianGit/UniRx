@@ -508,12 +508,25 @@ namespace UniRx.Tests
 
             bool receivedValue = false;
             IDisposable subscription = null;
-            subject.Subscribe(_ => subscription.Dispose());
+            subject.Subscribe(_ =>
+            {
+                if (subscription != null)
+                {
+                    // Assume order of calls, even though it is not guaranteed,
+                    // otherwise the test doesn't make sense.
+                    Assume.That(receivedValue, Is.False);
+                    subscription.Dispose();
+                    subscription = null;
+                }
+
+            });
             subscription = subject.Subscribe(_ => receivedValue = true);
 
             receivedValue = false;
             subject.OnNext(0);
             subject.OnCompleted();
+
+            Assume.That(subscription, Is.Null);
             Assert.IsFalse(receivedValue);
         }
     }
