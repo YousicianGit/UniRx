@@ -117,19 +117,15 @@ namespace UniRx
                     }
 
                     var type = current.GetType();
-#if UNITY_2018_3_OR_NEWER
-#pragma warning disable CS0618
-#endif
+#if !UNITY_2018_2_OR_NEWER
                     if (type == typeof(WWW))
                     {
                         var www = (WWW)current;
                         editorQueueWorker.Enqueue(_ => ConsumeEnumerator(UnwrapWaitWWW(www, routine)), null);
                         return;
                     }
-#if UNITY_2018_3_OR_NEWER
-#pragma warning restore CS0618
 #endif
-                    else if (type == typeof(AsyncOperation))
+                    if (type == typeof(AsyncOperation))
                     {
                         var asyncOperation = (AsyncOperation)current;
                         editorQueueWorker.Enqueue(_ => ConsumeEnumerator(UnwrapWaitAsyncOperation(asyncOperation, routine)), null);
@@ -162,9 +158,7 @@ namespace UniRx
                 }
             }
 
-#if UNITY_2018_3_OR_NEWER
-#pragma warning disable CS0618
-#endif
+#if !UNITY_2018_2_OR_NEWER
             IEnumerator UnwrapWaitWWW(WWW www, IEnumerator continuation)
             {
                 while (!www.isDone)
@@ -173,8 +167,6 @@ namespace UniRx
                 }
                 ConsumeEnumerator(continuation);
             }
-#if UNITY_2018_3_OR_NEWER
-#pragma warning restore CS0618
 #endif
 
             IEnumerator UnwrapWaitAsyncOperation(AsyncOperation asyncOperation, IEnumerator continuation)
@@ -445,6 +437,13 @@ namespace UniRx
                 // Don't try to add a GameObject when the scene is not playing. Only valid in the Editor, EditorView.
                 if (!ScenePlaybackDetector.IsPlaying) return;
 #endif
+                if (isQuitting)
+                {
+                    // don't create new instance after quitting
+                    // avoid "Some objects were not cleaned up when closing the scene find target" error.
+                    return;
+                }
+	            
                 MainThreadDispatcher dispatcher = null;
 
                 try
@@ -457,13 +456,6 @@ namespace UniRx
                     var ex = new Exception("UniRx requires a MainThreadDispatcher component created on the main thread. Make sure it is added to the scene before calling UniRx from a worker thread.");
                     UnityEngine.Debug.LogException(ex);
                     throw ex;
-                }
-
-                if (isQuitting)
-                {
-                    // don't create new instance after quitting
-                    // avoid "Some objects were not cleaned up when closing the scene find target" error.
-                    return;
                 }
 
                 if (dispatcher == null)
