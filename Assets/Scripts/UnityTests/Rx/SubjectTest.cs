@@ -476,5 +476,67 @@ namespace UniRx.Tests
             subject.Subscribe(x => onNext.Add(x), x => exception.Add(x), () => onCompletedCallCount++);
             onNext.Is(10000, 2, 20);
         }
+
+        [Test]
+        public void Subject_UnsubscribeFromOnNext()
+        {
+            UnsubscribeFromOnNextTest(() => new Subject<int>());
+        }
+
+        /*
+         
+        Fails on dotnet Rx also, see https://github.com/dotnet/reactive/issues/875
+         
+        [Test]
+        public void BehaviorSubject_UnsubscribeFromOnNext()
+        {
+            UnsubscribeFromOnNextTest(() => new BehaviorSubject<int>(0));
+        }
+
+        Difference between schedulers makes using dotnet version too hard.
+        This test will still fail...
+
+        [Test]
+        public void ReplaySubject_UnsubscribeFromOnNext()
+        {
+            UnsubscribeFromOnNextTest(() => new ReplaySubject<int>());
+        }
+        
+        */
+
+        [Test]
+        public void AsyncSubject_UnsubscribeFromOnNext()
+        {
+            UnsubscribeFromOnNextTest(() => new AsyncSubject<int>());
+        }
+
+        private void UnsubscribeFromOnNextTest<T>(Func<T> constructor)
+            where T : ISubject<int>
+        {
+            var subject = constructor();
+
+            bool receivedValue = false;
+            IDisposable subscription = null;
+            subject.Subscribe(_ =>
+            {
+                if (subscription != null)
+                {
+                    // Assume order of calls, even though it is not guaranteed,
+                    // otherwise the test doesn't make sense.
+                    Assume.That(receivedValue, Is.False);
+                    subscription.Dispose();
+                    subscription = null;
+                }
+
+            });
+            subscription = subject.Subscribe(_ => receivedValue = true);
+
+            receivedValue = false;
+            subject.OnNext(0);
+            subject.OnCompleted();
+
+            Assume.That(subscription, Is.Null);
+            Assert.IsFalse(receivedValue);
+        }
     }
 }
