@@ -429,6 +429,12 @@ namespace UniRx
             }
         }
 
+        [RuntimeInitializeOnLoadMethod(RuntimeInitializeLoadType.SubsystemRegistration)]
+        static void EnterPlayMode()
+        {
+	        isQuitting = false;
+        }
+
         public static void Initialize()
         {
             if (!initialized)

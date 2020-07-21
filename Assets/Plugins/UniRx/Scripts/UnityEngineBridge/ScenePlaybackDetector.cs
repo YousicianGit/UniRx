@@ -2,7 +2,6 @@
 
 using UnityEditor;
 using UnityEditor.Callbacks;
-using UnityEngine;
 
 namespace UniRx
 {
@@ -52,30 +51,10 @@ namespace UniRx
         // InitializeOnLoad ensures that this constructor is called when the Unity Editor is started.
         static ScenePlaybackDetector()
         {
-#if UNITY_2017_2_OR_NEWER
             EditorApplication.playModeStateChanged += e =>
-#else
-            EditorApplication.playmodeStateChanged += () =>
-#endif
             {
-                // Before scene start:          isPlayingOrWillChangePlaymode = false;  isPlaying = false
-                // Pressed Playback button:     isPlayingOrWillChangePlaymode = true;   isPlaying = false
-                // Playing:                     isPlayingOrWillChangePlaymode = false;  isPlaying = true
-                // Pressed stop button:         isPlayingOrWillChangePlaymode = true;   isPlaying = true
-                if (EditorApplication.isPlayingOrWillChangePlaymode && !EditorApplication.isPlaying)
-                {
-                    AboutToStartScene = true;
-                }
-                else
-                {
-                    AboutToStartScene = false;
-                }
-
-                // Detect when playback is stopped.
-                if (!EditorApplication.isPlaying)
-                {
-                    IsPlaying = false;
-                }
+	            IsPlaying = e == PlayModeStateChange.ExitingEditMode || e == PlayModeStateChange.EnteredPlayMode;
+	            AboutToStartScene = e == PlayModeStateChange.ExitingEditMode;
             };
         }
     }
