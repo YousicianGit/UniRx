@@ -9,7 +9,7 @@ namespace UniRx.Diagnostics
         /// </summary>
         public static IObservable<T> Debug<T>(this IObservable<T> source, string label = null)
         {
-#if DEBUG
+#if DEBUG || TRACE
             var l = (label == null) ? "" : "[" + label + "]";
             return source.Materialize()
                 .Do(x => UnityEngine.Debug.Log(l + x.ToString()))
@@ -27,7 +27,7 @@ namespace UniRx.Diagnostics
         /// </summary>
         public static IObservable<T> Debug<T>(this IObservable<T> source, UniRx.Diagnostics.Logger logger)
         {
-#if DEBUG
+#if DEBUG || TRACE
             return source.Materialize()
                 .Do(x => logger.Debug(x.ToString()))
                 .Dematerialize()
