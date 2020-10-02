@@ -39,11 +39,12 @@ namespace UniRx.Operators
 
             public IDisposable Run()
             {
-                var l = parent.left.Subscribe(new LeftObserver(this));
                 var rSubscription = new SingleAssignmentDisposable();
                 rSubscription.Disposable  = parent.right.Subscribe(new RightObserver(this, rSubscription));
 
-                return StableCompositeDisposable.Create(l, rSubscription);
+                var lSubscription = parent.left.Subscribe(new LeftObserver(this));
+
+                return StableCompositeDisposable.Create(lSubscription, rSubscription);
             }
 
             public override void OnNext(TResult value)
