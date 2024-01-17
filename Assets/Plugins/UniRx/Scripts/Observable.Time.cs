@@ -1,5 +1,6 @@
 ﻿using System;
 using System.Collections.Generic;
+using System.Runtime.CompilerServices;
 using UniRx.Operators;
 
 namespace UniRx
@@ -117,24 +118,46 @@ namespace UniRx
             return new ThrottleFirstObservable<TSource>(source, dueTime, scheduler);
         }
 
-        public static IObservable<T> Timeout<T>(this IObservable<T> source, TimeSpan dueTime)
+        public static IObservable<T> Timeout<T>(
+            this IObservable<T> source,
+            TimeSpan dueTime,
+            [CallerMemberName] string memberName = "",
+            [CallerFilePath] string sourceFilePath = "",
+            [CallerLineNumber] int sourceLineNumber = 0)
         {
-            return source.Timeout(dueTime, Scheduler.DefaultSchedulers.TimeBasedOperations);
+            return source.Timeout(dueTime, Scheduler.DefaultSchedulers.TimeBasedOperations, memberName, sourceFilePath, sourceLineNumber);
         }
 
-        public static IObservable<T> Timeout<T>(this IObservable<T> source, TimeSpan dueTime, IScheduler scheduler)
+        public static IObservable<T> Timeout<T>(
+            this IObservable<T> source,
+            TimeSpan dueTime,
+            IScheduler scheduler,
+            [CallerMemberName] string memberName = "",
+            [CallerFilePath] string sourceFilePath = "",
+            [CallerLineNumber] int sourceLineNumber = 0)
         {
-            return new TimeoutObservable<T>(source, dueTime, scheduler);
+            return new TimeoutObservable<T>(source, dueTime, scheduler, $"{memberName} at {sourceFilePath}:{sourceLineNumber}");
         }
 
-        public static IObservable<T> Timeout<T>(this IObservable<T> source, DateTimeOffset dueTime)
+        public static IObservable<T> Timeout<T>(
+            this IObservable<T> source,
+            DateTimeOffset dueTime,
+            [CallerMemberName] string memberName = "",
+            [CallerFilePath] string sourceFilePath = "",
+            [CallerLineNumber] int sourceLineNumber = 0)
         {
-            return source.Timeout(dueTime, Scheduler.DefaultSchedulers.TimeBasedOperations);
+            return source.Timeout(dueTime, Scheduler.DefaultSchedulers.TimeBasedOperations, memberName, sourceFilePath, sourceLineNumber);
         }
 
-        public static IObservable<T> Timeout<T>(this IObservable<T> source, DateTimeOffset dueTime, IScheduler scheduler)
+        public static IObservable<T> Timeout<T>(
+            this IObservable<T> source,
+            DateTimeOffset dueTime,
+            IScheduler scheduler,
+            [CallerMemberName] string memberName = "",
+            [CallerFilePath] string sourceFilePath = "",
+            [CallerLineNumber] int sourceLineNumber = 0)
         {
-            return new TimeoutObservable<T>(source, dueTime, scheduler);
+            return new TimeoutObservable<T>(source, dueTime, scheduler, $"{memberName} at {sourceFilePath}:{sourceLineNumber}");
         }
     }
 }

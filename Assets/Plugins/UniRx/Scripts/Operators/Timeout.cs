@@ -8,47 +8,53 @@ namespace UniRx.Operators
         readonly TimeSpan? dueTime;
         readonly DateTimeOffset? dueTimeDT;
         readonly IScheduler scheduler;
+        readonly string context;
 
-        public TimeoutObservable(IObservable<T> source, TimeSpan dueTime, IScheduler scheduler) 
+        public TimeoutObservable(IObservable<T> source, TimeSpan dueTime, IScheduler scheduler, string context)
             : base(scheduler == Scheduler.CurrentThread || source.IsRequiredSubscribeOnCurrentThread())
         {
             this.source = source;
             this.dueTime = dueTime;
             this.scheduler = scheduler;
+            this.context = context;
         }
 
-        public TimeoutObservable(IObservable<T> source, DateTimeOffset dueTime, IScheduler scheduler) 
+        public TimeoutObservable(IObservable<T> source, DateTimeOffset dueTime, IScheduler scheduler, string context)
             : base(scheduler == Scheduler.CurrentThread || source.IsRequiredSubscribeOnCurrentThread())
         {
             this.source = source;
             this.dueTimeDT = dueTime;
             this.scheduler = scheduler;
+            this.context = context;
         }
 
         protected override IDisposable SubscribeCore(IObserver<T> observer, IDisposable cancel)
         {
             if (dueTime != null)
             {
-                return new Timeout(this, observer, cancel).Run();
+                return new Timeout(this, observer, cancel, context).Run();
             }
             else
             {
-                return new Timeout_(this, observer, cancel).Run();
+                return new Timeout_(this, observer, cancel, context).Run();
             }
         }
 
         class Timeout : OperatorObserverBase<T, T>
         {
             readonly TimeoutObservable<T> parent;
+            string context;
             readonly object gate = new object();
             ulong objectId = 0ul;
             bool isTimeout = false;
             SingleAssignmentDisposable sourceSubscription;
             SerialDisposable timerSubscription;
 
-            public Timeout(TimeoutObservable<T> parent, IObserver<T> observer, IDisposable cancel) : base(observer, cancel)
+            public Timeout(TimeoutObservable<T> parent, IObserver<T> observer, IDisposable cancel, string context)
+                : base(observer, cancel)
             {
                 this.parent = parent;
+                this.context = context;
             }
 
             public IDisposable Run()
@@ -74,7 +80,7 @@ namespace UniRx.Operators
                     }
                     if (isTimeout)
                     {
-                        try { observer.OnError(new TimeoutException()); } finally { Dispose(); }
+                        try { observer.OnError(new TimeoutException(context)); } finally { Dispose(); }
                     }
                 });
             }
@@ -128,14 +134,17 @@ namespace UniRx.Operators
         class Timeout_ : OperatorObserverBase<T, T>
         {
             readonly TimeoutObservable<T> parent;
+            string context;
             readonly object gate = new object();
             bool isFinished = false;
             SingleAssignmentDisposable sourceSubscription;
             IDisposable timerSubscription;
 
-            public Timeout_(TimeoutObservable<T> parent, IObserver<T> observer, IDisposable cancel) : base(observer, cancel)
+            public Timeout_(TimeoutObservable<T> parent, IObserver<T> observer, IDisposable cancel, string context)
+                : base(observer, cancel)
             {
                 this.parent = parent;
+                this.context = context;
             }
 
             public IDisposable Run()
@@ -158,7 +167,7 @@ namespace UniRx.Operators
                 }
 
                 sourceSubscription.Dispose();
-                try { observer.OnError(new TimeoutException()); } finally { Dispose(); }
+                try { observer.OnError(new TimeoutException(this.context)); } finally { Dispose(); }
             }
 
             public override void OnNext(T value)
