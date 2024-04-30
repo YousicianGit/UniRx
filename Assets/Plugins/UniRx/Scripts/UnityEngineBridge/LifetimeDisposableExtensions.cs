@@ -55,6 +55,7 @@ namespace UniRx
         }
 
         /// <summary>Dispose self on target gameObject has been destroyed. Return value is self disposable.</summary>
+        [Obsolete("This can misbehave, use a CompositeDisposable instead.")]
         public static T AddTo<T>(this T disposable, Component gameObjectComponent)
             where T : IDisposable
         {
@@ -71,6 +72,7 @@ namespace UniRx
         /// <para>Add disposable(self) to CompositeDisposable(or other ICollection) and Dispose self on target gameObject has been destroyed.</para>
         /// <para>Return value is self disposable.</para>
         /// </summary>
+        [Obsolete("This can misbehave, use a CompositeDisposable instead.")]
         public static T AddTo<T>(this T disposable, ICollection<IDisposable> container, GameObject gameObject)
             where T : IDisposable
         {
@@ -81,6 +83,7 @@ namespace UniRx
         /// <para>Add disposable(self) to CompositeDisposable(or other ICollection) and Dispose self on target gameObject has been destroyed.</para>
         /// <para>Return value is self disposable.</para>
         /// </summary>
+        [Obsolete("This can misbehave, use a CompositeDisposable instead.")]
         public static T AddTo<T>(this T disposable, ICollection<IDisposable> container, Component gameObjectComponent)
             where T : IDisposable
         {
