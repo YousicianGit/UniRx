@@ -10,8 +10,8 @@ namespace UniRx.Triggers
         Subject<Unit> onDestroy;
         CompositeDisposable disposablesOnDestroy;
 
-        [Obsolete("Internal Use.")]
-        internal bool IsMonitoredActivate { get; set; }
+        [Obsolete("Functionality using this deleted from fork, moved to a deprecated assembly to be phased out.")]
+        public bool IsMonitoredActivate { get; set; }
 
         public bool IsActivated { get; private set; }
 
