@@ -238,7 +238,8 @@ namespace UniRx
 
         public override string ToString()
         {
-            return (value == null) ? "(null)" : value.ToString();
+	        var valueString = (value == null) ? "null" : value.ToString();
+            return $"ReactiveProperty({valueString})";
         }
 
         public bool IsRequiredSubscribeOnCurrentThread()
@@ -462,7 +463,20 @@ namespace UniRx
 
         public override string ToString()
         {
-            return (latestValue == null) ? "(null)" : latestValue.ToString();
+            string valueString;
+            if (!this.HasValue)
+            {
+	            valueString = "no value";
+            }
+            else if (this.latestValue == null)
+            {
+	            valueString = "null";
+            }
+            else
+            {
+	            valueString = this.latestValue.ToString();
+            }
+            return $"ReadOnlyReactiveProperty({valueString})";
         }
 
         public bool IsRequiredSubscribeOnCurrentThread()
