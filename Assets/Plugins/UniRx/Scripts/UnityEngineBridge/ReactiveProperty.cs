@@ -274,6 +274,11 @@ namespace UniRx
         {
             get
             {
+	            if (!this.HasValue)
+	            {
+		            throw new Exception("This ReadOnlyReactiveProperty has no value yet.");
+	            }
+
                 return latestValue;
             }
         }
