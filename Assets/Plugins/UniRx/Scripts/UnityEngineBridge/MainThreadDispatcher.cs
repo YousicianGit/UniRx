@@ -657,12 +657,14 @@ namespace UniRx
 
         void OnApplicationPause(bool pause)
         {
+	        Debug.Log($"[APP PAUSE DEBUG] OnApplicationPause called with value: {pause}");
             if (onApplicationPause != null) onApplicationPause.OnNext(pause);
         }
 
         public static IObservable<bool> OnApplicationPauseAsObservable()
         {
-            return Instance.onApplicationPause ?? (Instance.onApplicationPause = new Subject<bool>());
+            return Instance.onApplicationPause ?? (Instance.onApplicationPause = new Subject<bool>())
+	            .Do(value => Debug.Log($"[APP PAUSE DEBUG] OnApplicationPauseAsObservable emitted: {value}"));
         }
 
         Subject<Unit> onApplicationQuit;
